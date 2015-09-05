@@ -2,8 +2,7 @@
 
 'use strict';
 
-var gulp = require('gulp'),
-    deploy = require('./index.js');
+var gulp = require('gulp');
 
 require('require-dir')('./gulp');
 
