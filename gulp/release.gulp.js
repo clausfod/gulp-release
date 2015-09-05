@@ -9,7 +9,7 @@ var gulp = require('gulp'),
 gulp.task('prerelease', ['build'], function () {
     gulp.src('target/dist/**').pipe(release({
         prefix: 'target/dist',
-        release: true,
+        release: false,
         repository: repository
     }));
 });
