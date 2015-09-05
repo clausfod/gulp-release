@@ -226,7 +226,7 @@ module.exports = function (options) {
                     packageFile = 'package.json', packageJson,
                     nextRelease;
                 if (options.release) {
-                    nextRelease = semver.inc(version, 'prepatch');
+                    nextRelease = semver.inc(version, 'patch');
                     gutil.log(gutil.colors.yellow('Bumbing version to "' + nextRelease + '"'));
                     if (fs.existsSync(bowerFile)) {
                         bowerJson = JSON.parse(fs.readFileSync(bowerFile));

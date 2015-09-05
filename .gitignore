@@ -1,4 +1,5 @@
 .idea
+.version.json
 env.properties
 node_modules
 target
