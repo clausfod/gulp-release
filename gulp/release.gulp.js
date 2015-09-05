@@ -3,7 +3,7 @@
 'use strict';
 
 var gulp = require('gulp'),
-    release = require('./index.js');
+    release = require('../index.js');
 
 gulp.task('prerelease', ['build'], function () {
     gulp.src('target/dist/**').pipe(release({
