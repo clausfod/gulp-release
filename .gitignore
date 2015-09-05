@@ -1,0 +1,5 @@
+.idea
+env.properties
+node_modules
+target
+
