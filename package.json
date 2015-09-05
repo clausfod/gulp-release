@@ -1,6 +1,6 @@
 {
     "name": "gulp-release",
-    "version": "1.0.0",
+    "version": "1.0.1-0",
     "description": "Plugin for gulp to allow pre-releases and releases into git repository",
     "repository": {
         "type": "git",
