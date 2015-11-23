@@ -113,7 +113,7 @@ module.exports = function (options) {
                         if (stats.isDirectory()) {
                             return;
                         }
-                        mkdirp.sync(path.dirname(file.dest));
+                        mkdirp.sync(path.dirname(file.destination));
                         fs.writeFileSync(file.destination, fs.readFileSync(file.source));
                     });
                     cb(null, version);
