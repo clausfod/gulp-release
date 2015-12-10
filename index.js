@@ -23,6 +23,9 @@ module.exports = function (options) {
         repository: ''
     }, options);
     options.prefix = options.prefix.replace('/', path.sep);
+    if (options.bumpVersion === undefined) {
+        options.bumpVersion = options.release;
+    }
 
     return through.obj(function (file, enc, callback) {
         var p = path.normalize(path.relative(file.cwd, file.path));
@@ -204,10 +207,9 @@ module.exports = function (options) {
                 });
             },
             function tagRelease(version, cb) {
-                var message, cmdTag;
+                var cmdTag;
                 if (options.release) {
-                    message = options.release ? 'Release' : 'Pre-release';
-                    cmdTag = spawn('git', ['tag', 'v' + version, '-m', message]);
+                    cmdTag = spawn('git', ['tag', 'v' + version, '-m', 'Release']);
                     gutil.log(gutil.colors.yellow('Tagging source files'));
                     cmdTag.on('close', function (code) {
                         if (code !== 0) {
@@ -225,7 +227,7 @@ module.exports = function (options) {
                 var bowerFile = 'bower.json', bowerJson,
                     packageFile = 'package.json', packageJson,
                     nextRelease;
-                if (options.release) {
+                if (options.bumpVersion) {
                     nextRelease = semver.inc(version, 'patch');
                     gutil.log(gutil.colors.yellow('Bumbing version to "' + nextRelease + '"'));
                     if (fs.existsSync(bowerFile)) {
@@ -243,7 +245,7 @@ module.exports = function (options) {
             },
             function addFiles(version, cb) {
                 var versionFiles = [], cmdAdd;
-                if (options.release) {
+                if (options.bumpVersion) {
                     gutil.log(gutil.colors.yellow('Adding versioned files to repository'));
                     if (fs.existsSync('bower.json')) {
                         versionFiles.push('bower.json');
@@ -263,7 +265,7 @@ module.exports = function (options) {
             },
             function commitFiles(version, cb) {
                 var cmdCommit;
-                if (options.release) {
+                if (options.bumpVersion) {
                     gutil.log(gutil.colors.yellow('Committing files to repository'));
                     cmdCommit = spawn('git', ['commit', '-m', '[gulp] Bumping version']);
                     cmdCommit.on('close', function (code) {
@@ -277,7 +279,7 @@ module.exports = function (options) {
             },
             function pushFiles(version, cb) {
                 var cmdPush;
-                if (options.release) {
+                if (options.bumpVersion) {
                     cmdPush = spawn('git', ['push', '--tags', 'origin', 'master']);
                     gutil.log(gutil.colors.yellow('Pushing files to repository'));
                     cmdPush.on('close', function (code) {

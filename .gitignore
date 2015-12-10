@@ -3,4 +3,4 @@
 env.properties
 node_modules
 target
-
+/nbproject
