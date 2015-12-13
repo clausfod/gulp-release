@@ -175,7 +175,7 @@ module.exports = function (options) {
             },
             function tagDistributionFiles(version, cb) {
                 var message = options.release ? 'Release' : 'Pre-release',
-                    cmdTag = spawn('git', ['tag', 'v' + version, '-m', message], { cwd: repoPath });
+                    cmdTag = spawn('git', ['tag', '-f', 'v' + version, '-m', message], { cwd: repoPath });
                 gutil.log(gutil.colors.yellow('Tagging files to distribution repository'));
                 cmdTag.on('close', function (code) {
                     if (code !== 0) {
@@ -209,7 +209,7 @@ module.exports = function (options) {
             function tagRelease(version, cb) {
                 var cmdTag;
                 if (options.release) {
-                    cmdTag = spawn('git', ['tag', 'v' + version, '-m', 'Release']);
+                    cmdTag = spawn('git', ['tag', '-f', 'v' + version, '-m', 'Release']);
                     gutil.log(gutil.colors.yellow('Tagging source files'));
                     cmdTag.on('close', function (code) {
                         if (code !== 0) {
