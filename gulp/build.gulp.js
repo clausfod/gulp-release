@@ -12,7 +12,7 @@ gulp.task('source-files', function () {
 });
 
 gulp.task('files', function () {
-    return gulp.src(['README.md', 'package.json'])
+    return gulp.src(['LICENSE', 'README.md', 'package.json'])
             .pipe(gulp.dest('target/dist'));
 });
 
