@@ -10,10 +10,12 @@ sha of the current source state if doing a pre-release. That is the flow of a re
 - The distribution Git repository is cloned.
 - The content of the distribution repository is replaced with the files to be distributed.
 - The new distribution is committed and tagged. If it is a pre-release the tag will have the format
-  "v&lt;x.y.z>-build.&lt;u>+sha.&lt;source sha>", e.g., "v0.3.0-build.25+sha.f52cbe6". If it is a release
-  the tag will only contain the version, e.g., "v0.3.0" (and the source repository will be tagged with the same version).
-- A `.version.json` file is created as part of the distribution files containing the same version tag.
-- All changes are pushed back to the source and the distribution repositories.
+  "v&lt;x.y.z>-build.&lt;number>+sha.&lt;source sha>", e.g., "v0.3.0-build.25+sha.f52cbe6". If it is a release
+  the tag will only contain the version, e.g., "v0.3.0".
+  The build number is read from the environment variable `BUILD_NUMBER` or set to `beta` otherwise.
+  When doing a release the source repository will be tagged with the release version and the version specified in `bower.json` and `package.json` will be bumped.
+- A `version.json` file is created as part of the distribution files containing the same version tag as well as a `.version.json` in the root of the source project. The latter is useful for a continuous integration system, such as Jenkins, to do trigger deployment of the committed distribution files.
+- All changes are pushed back to the source and the distribution repositories. Credentials to allow this _must_ be available to Git.
 
 ## Usage
 
