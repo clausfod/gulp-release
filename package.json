@@ -1,5 +1,5 @@
 {
-    "name": "gulp-release",
+    "name": "gulp-git-release",
     "version": "1.0.5",
     "description": "Plugin for gulp to allow pre-releases and releases into git repository",
     "repository": {
@@ -31,4 +31,3 @@
     },
     "readme": "..."
 }
-

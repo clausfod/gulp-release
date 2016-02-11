@@ -1,5 +1,5 @@
-gulp-release
-============
+gulp-git-release
+================
 
 > Do pre-releases and releases of gulp based projects into Git repository.
 
@@ -22,7 +22,7 @@ sha of the current source state if doing a pre-release. That is the flow of a re
 ### Pre-release
 
 ```javascript
-var release = require('gulp-release');
+var release = require('gulp-git-release');
 
 gulp.task('pre-release', function() {
     return gulp.src('target/dist/**/*')
@@ -39,7 +39,7 @@ The given prefix will be removed before files are copied to the distribution rep
 ### Release
 
 ```javascript
-var release = require('gulp-release');
+var release = require('gulp-git-release');
 
 gulp.task('release', function() {
     return gulp.src('target/dist/**/*')
