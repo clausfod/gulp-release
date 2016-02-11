@@ -4,7 +4,7 @@
     "description": "Plugin for gulp to allow pre-releases and releases into git repository",
     "repository": {
         "type": "git",
-        "url": "http://git.nykreditnet.net/scm/dev/gulp-release.git"
+        "url": "https://github.com/Nykredit/gulp-release.git"
     },
     "dependencies": {
         "async": "~1.4.2",
@@ -29,6 +29,6 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "readme": "...",
-    "private": true
+    "readme": "..."
 }
+
