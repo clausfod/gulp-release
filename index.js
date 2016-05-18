@@ -15,7 +15,7 @@ var assign = require('object-assign'),
 
 module.exports = function (options) {
     var self, files = [],
-        repoPath = path.normalize(path.join(process.cwd(), 'deploy-' + Date.now()));
+        repoPath = path.normalize(path.join(process.cwd(), 'deploy-' + Date.now() + '-' + (Math.floor(Math.random() * 1000))));
 
     options = assign({}, {
         prefix: '',
