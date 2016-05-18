@@ -261,6 +261,8 @@ module.exports = function (options) {
                             cb(null, version);
                         }
                     });
+                } else {
+                    cb(null, version);
                 }
             },
             function commitFiles(version, cb) {
@@ -275,6 +277,8 @@ module.exports = function (options) {
                             cb(null, version);
                         }
                     });
+                } else {
+                    cb(null, version);
                 }
             },
             function pushFiles(version, cb) {
@@ -289,6 +293,8 @@ module.exports = function (options) {
                             cb(null, version);
                         }
                     });
+                } else {
+                    cb(null, version);
                 }
             }
         ], function (err) {
