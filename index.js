@@ -61,6 +61,8 @@ module.exports = function (options) {
 
                 if (!options.release) {
                     cmdRevParse = spawn('git', ['rev-parse', '--short', 'HEAD']);
+                    
+                    gutil.log(gutil.colors.yellow('Fetching SHA hashes'));
                     cmdRevParse.stdout.on('data', function (data) {
                         sha1 = data.toString().trim();
                     });
@@ -78,7 +80,25 @@ module.exports = function (options) {
             function cloneDistributionRepository(version, cb) {
                 var cmdClone = spawn('git', ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]);
                 gutil.log(gutil.colors.yellow('Cloning distribution repository ' + options.repository));
+                
+                var stdout = '';
+                var stderr = '';
+                
+                cmdClone.stdout.on('data', function(buf) {
+                    stdout += buf;
+                });
+                cmdClone.stderr.on('data', function(buf) {
+                    stderr += buf;
+                });
+
                 cmdClone.on('close', function (code) {
+                    if (stdout != '') {
+                        console.log('[stdout] stdout "%s"', stdout);    
+                    }
+                    if (stderr != '') {
+                        console.log('[stderr] stderr "%s"', stderr);    
+                    }                
+
                     if (code !== 0) {
                         cb('git clone exited with code ' + code);
                     } else {
@@ -153,7 +173,25 @@ module.exports = function (options) {
             function addDistributionFiles(version, cb) {
                 var cmdAdd = spawn('git', ['add', '--all', '.'], { cwd: repoPath });
                 gutil.log(gutil.colors.yellow('Adding files to distribution repository'));
+                
+                var stdout = '';
+                var stderr = '';
+                
+                cmdAdd.stdout.on('data', function(buf) {
+                    stdout += buf;
+                });
+                cmdAdd.stderr.on('data', function(buf) {
+                    stderr += buf;
+                });
+
                 cmdAdd.on('close', function (code) {
+                    if (stdout != '') {
+                        console.log('[stdout] stdout "%s"', stdout);    
+                    }
+                    if (stderr != '') {
+                        console.log('[stderr] stderr "%s"', stderr);    
+                    }
+                        
                     if (code !== 0) {
                         cb('git add exited with code ' + code);
                     } else {
@@ -163,9 +201,27 @@ module.exports = function (options) {
             },
             function commitDistributionFiles(version, cb) {
                 var message = (options.release ? 'Release ' : 'Pre-release ') + version,
-                    cmdCommit = spawn('git', ['commit', '-m', message], { cwd: repoPath });
+                var cmdCommit = spawn('git', ['commit', '-m', message], { cwd: repoPath });
                 gutil.log(gutil.colors.yellow('Committing files to distribution repository'));
+                
+                var stdout = '';
+                var stderr = '';
+                
+                cmdCommit.stdout.on('data', function(buf) {
+                    stdout += buf;
+                });
+                cmdCommit.stderr.on('data', function(buf) {
+                    stderr += buf;
+                });
+
                 cmdCommit.on('close', function (code) {
+                    if (stdout != '') {
+                        console.log('[stdout] stdout "%s"', stdout);    
+                    }
+                    if (stderr != '') {
+                        console.log('[stderr] stderr "%s"', stderr);    
+                    }
+
                     if (code !== 0) {
                         cb('git commit exited with code ' + code);
                     } else {
@@ -175,9 +231,27 @@ module.exports = function (options) {
             },
             function tagDistributionFiles(version, cb) {
                 var message = options.release ? 'Release' : 'Pre-release',
-                    cmdTag = spawn('git', ['tag', '-f', 'v' + version, '-m', message], { cwd: repoPath });
+                var cmdTag = spawn('git', ['tag', '-f', 'v' + version, '-m', message], { cwd: repoPath });
                 gutil.log(gutil.colors.yellow('Tagging files to distribution repository'));
+                
+                var stdout = '';
+                var stderr = '';
+                
+                cmdTag.stdout.on('data', function(buf) {
+                    stdout += buf;
+                });
+                cmdTag.stderr.on('data', function(buf) {
+                    stderr += buf;
+                });
+
                 cmdTag.on('close', function (code) {
+                    if (stdout != '') {
+                        console.log('[stdout] stdout "%s"', stdout);    
+                    }
+                    if (stderr != '') {
+                        console.log('[stderr] stderr "%s"', stderr);    
+                    }                
+
                     if (code !== 0) {
                         cb('git tag exited with code ' + code);
                     } else {
@@ -191,7 +265,12 @@ module.exports = function (options) {
 
                 var stdout = '';
                 var stderr = '';
-                spawnLogs(stdout, stderr, cmdPush);
+                cmdPush.stdout.on('data', function(buf) {
+                    stdout += buf;
+                });
+                cmdPush.stderr.on('data', function(buf) {
+                    stderr += buf;
+                });
                 
                 cmdPush.on('close', function(code) {
                     if (stdout != '') {
@@ -201,14 +280,6 @@ module.exports = function (options) {
                         console.log('[stderr] "%s"', stderr);    
                     }
                     
-                    if (code !== 0) {
-                        cb('git push exited with code ' + code);
-                    } else {
-                        cb(null, version);
-                    }
-                });
-                    
-                cmdPush.on('close', function (code) {
                     if (code !== 0) {
                         cb('git push exited with code ' + code);
                     } else {
@@ -231,12 +302,27 @@ module.exports = function (options) {
                 if (options.release) {
                     cmdTag = spawn('git', ['tag', '-f', 'v' + version, '-m', 'Release']);
                     gutil.log(gutil.colors.yellow('Tagging source files'));
+                    
+                    var stdout = '';
+                    var stderr = '';
+                    
+                    cmdTag.stdout.on('data', function(buf) {
+                        stdout += buf;
+                    });
+                    cmdTag.stderr.on('data', function(buf) {
+                        stderr += buf;
+                    });
+
                     cmdTag.on('close', function (code) {
+                        if (stdout != '') {
+                            console.log('[stdout] stdout "%s"', stdout);    
+                        }
+                        if (stderr != '') {
+                            console.log('[stderr] stderr "%s"', stderr);    
+                        }                    
                         if (code !== 0) {
-                            gutil.log(gutil.colors.yellow('0 - TESTING************'));
                             cb('git tag exited with code ' + code);
                         } else {
-                            gutil.log(gutil.colors.yellow('1 - TESTING************'));
                             cb(null, version);
                         }
                     });
@@ -276,7 +362,25 @@ module.exports = function (options) {
                         versionFiles.push('package.json');
                     }
                     cmdAdd = spawn('git', ['add'].concat(versionFiles));
+
+                    var stdout = '';
+                    var stderr = '';
+                    
+                    cmdAdd.stdout.on('data', function(buf) {
+                        stdout += buf;
+                    });
+                    cmdAdd.stderr.on('data', function(buf) {
+                        stderr += buf;
+                    });
+
                     cmdAdd.on('close', function (code) {
+                        if (stdout != '') {
+                            console.log('[stdout] stdout "%s"', stdout);    
+                        }
+                        if (stderr != '') {
+                            console.log('[stderr] stderr "%s"', stderr);    
+                        }                    
+                    
                         if (code !== 0) {
                             cb('git add exited with code ' + code);
                         } else {
@@ -292,7 +396,25 @@ module.exports = function (options) {
                 if (options.bumpVersion) {
                     gutil.log(gutil.colors.yellow('Committing files to repository'));
                     cmdCommit = spawn('git', ['commit', '-m', '[gulp] Bumping version']);
+                    
+                    var stdout = '';
+                    var stderr = '';
+                    
+                    cmdCommit.stdout.on('data', function(buf) {
+                        stdout += buf;
+                    });
+                    cmdCommit.stderr.on('data', function(buf) {
+                        stderr += buf;
+                    });
+
                     cmdCommit.on('close', function (code) {
+                        if (stdout != '') {
+                            console.log('[stdout] stdout "%s"', stdout);    
+                        }
+                        if (stderr != '') {
+                            console.log('[stderr] stderr "%s"', stderr);    
+                        }                    
+                    
                         if (code !== 0) {
                             cb('git commit exited with code ' + code);
                         } else {
@@ -305,30 +427,7 @@ module.exports = function (options) {
             },
             function pushFiles(version, cb) {
                 var cmdPush;
-                var cmdTags;
                 if (options.bumpVersion) {
-                    
-                    cmdTags = spawn('git', ['tag']);
-                    
-                    var stdout = '';
-                    var stderr = '';
-                    
-                    cmdTags.stdout.on('data', function(buf) {
-                        stdout += buf;
-                    });
-                    cmdTags.stderr.on('data', function(buf) {
-                        stderr += buf;
-                    });
-                    
-                    cmdTags.on('close', function(code) {
-                        if (stdout != '') {
-                            console.log('[stdout] stdout "%s"', stdout);    
-                        }
-                        if (stderr != '') {
-                            console.log('[stderr] stderr "%s"', stderr);    
-                        }
-                    });
-                                        
                     cmdPush = spawn('git', ['push', '--tags', 'origin', 'master']);
                     gutil.log(gutil.colors.yellow('Pushing files to repository'));
 
@@ -360,14 +459,6 @@ module.exports = function (options) {
                     cb(null, version);
                 }
             },
-            function spawnLogs(stdout, stderr, spawnProcess) {
-                spawnProcess.stdout.on('data', function(buf) {
-                    stdout += buf;
-                });
-                spawnProcess.stderr.on('data', function(buf) {
-                    stderr += buf;
-                });
-            }            
         ], function (err) {
             if (err) {
                 switch (err) {
