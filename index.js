@@ -231,7 +231,7 @@ module.exports = function (options) {
             },
             function tagDistributionFiles(version, cb) {
                 var message = options.release ? 'Release' : 'Pre-release',
-                var cmdTag = spawn('git', ['tag', '-f', 'v' + version, '-m', message], { cwd: repoPath });
+                cmdTag = spawn('git', ['tag', '-f', 'v' + version, '-m', message], { cwd: repoPath });
                 gutil.log(gutil.colors.yellow('Tagging files to distribution repository'));
                 
                 var stdout = '';
