@@ -209,13 +209,14 @@ module.exports = function (options) {
             function tagRelease(version, cb) {
                 var cmdTag;
                 if (options.release) {
-                    gutil.log(gutil.colors.yellow('Testing testing testing'));
                     cmdTag = spawn('git', ['tag', '-f', 'v' + version, '-m', 'Release']);
                     gutil.log(gutil.colors.yellow('Tagging source files'));
                     cmdTag.on('close', function (code) {
                         if (code !== 0) {
+                            gutil.log(gutil.colors.yellow('0 - TESTING************'));
                             cb('git tag exited with code ' + code);
                         } else {
+                            gutil.log(gutil.colors.yellow('1 - TESTING************'));
                             cb(null, version);
                         }
                     });
