@@ -191,13 +191,7 @@ module.exports = function (options) {
 
                 var stdout = '';
                 var stderr = '';
-                
-                cmdPush.stdout.on('data', function(buf) {
-                    stdout += buf;
-                });
-                cmdPush.stderr.on('data', function(buf) {
-                    stderr += buf;
-                });
+                spawnLogs(stdout, stderr, cmdPush)
                 
                 cmdPush.on('close', function(code) {
                     if (stdout != '') {
@@ -365,7 +359,15 @@ module.exports = function (options) {
                 } else {
                     cb(null, version);
                 }
-            }
+            },
+            function spawnLogs(stdout, stderr, spawnProcess) {
+                spawnProcess.stdout.on('data', function(buf) {
+                    stdout += buf;
+                });
+                spawnProcess.stderr.on('data', function(buf) {
+                    stderr += buf;
+                });
+            }            
         ], function (err) {
             if (err) {
                 switch (err) {
