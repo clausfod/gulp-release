@@ -188,6 +188,32 @@ module.exports = function (options) {
             function pushDistributionFiles(version, cb) {
                 var cmdPush = spawn('git', ['push', '--tags', 'origin', 'master'], { cwd: repoPath });
                 gutil.log(gutil.colors.yellow('Pushing files to distribution repository'));
+
+                var stdout = '';
+                var stderr = '';
+                
+                cmdPush.stdout.on('data', function(buf) {
+                    stdout += buf;
+                });
+                cmdPush.stderr.on('data', function(buf) {
+                    stderr += buf;
+                });
+                
+                cmdPush.on('close', function(code) {
+                    if (stdout != '') {
+                        console.log('[stdout] "%s"', stdout);    
+                    }
+                    if (stderr != '') {
+                        console.log('[stderr] "%s"', stderr);    
+                    }
+                    
+                    if (code !== 0) {
+                        cb('git push exited with code ' + code);
+                    } else {
+                        cb(null, version);
+                    }
+                });
+                    
                 cmdPush.on('close', function (code) {
                     if (code !== 0) {
                         cb('git push exited with code ' + code);
