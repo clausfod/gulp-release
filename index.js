@@ -64,12 +64,21 @@ module.exports = function (options) {
                     cmdRevParse = spawn('git', ['rev-parse', '--short', 'HEAD']);
                     
                     gutil.log(gutil.colors.yellow('Fetching SHA hashes'));
-                    cmdRevParse.stdout.on('data', function (data) {
+
+                    var stdout = '';
+                    var stderr = '';
+                    
+                    cmdRevParse.stdout.on('data', function(data) {
                         sha1 = data.toString().trim();
                     });
+                    
+                    cmdRevParse.stderr.on('data', function(buf) {
+                        stderr += buf;
+                    });
+
                     cmdRevParse.on('close', function (code) {
                         if (code !== 0) {
-                            cb('git rev-parse exited with code ' + code);
+                            cb('git rev-parse exited with code ' + code + ' [stderr]: ' + stderr);
                         } else {
                             cb(null, version + '-' + preReleaseVersion + '+sha.' + sha1);
                         }
@@ -93,13 +102,9 @@ module.exports = function (options) {
                 });
 
                 cmdClone.on('close', function (code) {
-                    
                     if (stdout != '' && options.debug) {
                         console.log('[stdout] "%s"', stdout);    
                     }
-                    if (stderr != '' && options.debug) {
-                        console.log('[stderr] "%s"', stderr);    
-                    }                
 
                     if (code !== 0) {
                         cb('git clone exited with code ' + code + ' [stderr]: ' + stderr);
@@ -190,12 +195,9 @@ module.exports = function (options) {
                     if (stdout != '' && options.debug) {
                         console.log('[stdout] "%s"', stdout);    
                     }
-                    if (stderr != '' && options.debug) {
-                        console.log('[stderr] "%s"', stderr);    
-                    }
                         
                     if (code !== 0) {
-                        cb('git add exited with code ' + code);
+                        cb('git add exited with code ' + code + ' [stderr]: ' + stderr);
                     } else {
                         cb(null, version);
                     }
@@ -220,12 +222,9 @@ module.exports = function (options) {
                     if (stdout != '' && options.debug) {
                         console.log('[stdout] "%s"', stdout);    
                     }
-                    if (stderr != '' && options.debug) {
-                        console.log('[stderr] "%s"', stderr);    
-                    }
 
                     if (code !== 0) {
-                        cb('git commit exited with code ' + code);
+                        cb('git commit exited with code ' + code + ' [stderr]: ' + stderr);
                     } else {
                         cb(null, version);
                     }
@@ -250,12 +249,9 @@ module.exports = function (options) {
                     if (stdout != '' && options.debug) {
                         console.log('[stdout] "%s"', stdout);    
                     }
-                    if (stderr != '' && options.debug) {
-                        console.log('[stderr] "%s"', stderr);    
-                    }                
 
                     if (code !== 0) {
-                        cb('git tag exited with code ' + code);
+                        cb('git tag exited with code ' + code + ' [stderr]: ' + stderr);
                     } else {
                         cb(null, version);
                     }
@@ -277,9 +273,6 @@ module.exports = function (options) {
                 cmdPush.on('close', function(code) {
                     if (stdout != '' && options.debug) {
                         console.log('[stdout] "%s"', stdout);    
-                    }
-                    if (stderr != '' && options.debug) {
-                        console.log('[stderr] "%s"', stderr);    
                     }
                     
                     if (code !== 0) {
@@ -319,11 +312,9 @@ module.exports = function (options) {
                         if (stdout != '' && options.debug) {
                             console.log('[stdout] "%s"', stdout);    
                         }
-                        if (stderr != '' && options.debug) {
-                            console.log('[stderr] "%s"', stderr);    
-                        }                    
+
                         if (code !== 0) {
-                            cb('git tag exited with code ' + code);
+                            cb('git tag exited with code ' + code + ' [stderr]: ' + stderr);
                         } else {
                             cb(null, version);
                         }
@@ -379,12 +370,9 @@ module.exports = function (options) {
                         if (stdout != '' && options.debug) {
                             console.log('[stdout] "%s"', stdout);    
                         }
-                        if (stderr != '' && options.debug) {
-                            console.log('[stderr] "%s"', stderr);    
-                        }                    
                     
                         if (code !== 0) {
-                            cb('git add exited with code ' + code);
+                            cb('git add exited with code ' + code + ' [stderr]: ' + stderr);
                         } else {
                             cb(null, version);
                         }
@@ -413,12 +401,9 @@ module.exports = function (options) {
                         if (stdout != '' && options.debug) {
                             console.log('[stdout] "%s"', stdout);    
                         }
-                        if (stderr != '' && options.debug) {
-                            console.log('[stderr] "%s"', stderr);    
-                        }                    
                     
                         if (code !== 0) {
-                            cb('git commit exited with code ' + code);
+                            cb('git commit exited with code ' + code + ' [stderr]: ' + stderr);
                         } else {
                             cb(null, version);
                         }
@@ -447,12 +432,9 @@ module.exports = function (options) {
                         if (stdout != '' && options.debug) {
                             console.log('[stdout] "%s"', stdout);    
                         }
-                        if (stderr != '' && options.debug) {
-                            console.log('[stderr] "%s"', stderr);    
-                        }
                         
                         if (code !== 0) {
-                            cb('git push exited with code ' + code);
+                            cb('git push exited with code ' + code + ' [stderr]: ' + stderr);
                         } else {
                             cb(null, version);
                         }
