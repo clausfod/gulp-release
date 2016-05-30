@@ -18,6 +18,7 @@ module.exports = function (options) {
         repoPath = path.normalize(path.join(process.cwd(), 'deploy-' + Date.now() + '-' + (Math.floor(Math.random() * 1000))));
 
     options = assign({}, {
+        debug: false,
         prefix: '',
         release: false,
         repository: ''
@@ -92,15 +93,16 @@ module.exports = function (options) {
                 });
 
                 cmdClone.on('close', function (code) {
-                    if (stdout != '') {
-                        console.log('[stdout] stdout "%s"', stdout);    
+                    
+                    if (stdout != '' && options.debug) {
+                        console.log('[stdout] "%s"', stdout);    
                     }
-                    if (stderr != '') {
-                        console.log('[stderr] stderr "%s"', stderr);    
+                    if (stderr != '' && options.debug) {
+                        console.log('[stderr] "%s"', stderr);    
                     }                
 
                     if (code !== 0) {
-                        cb('git clone exited with code ' + code);
+                        cb('git clone exited with code ' + code + ' [stderr]: ' + stderr);
                     } else {
                         cb(null, version);
                     }
@@ -185,11 +187,11 @@ module.exports = function (options) {
                 });
 
                 cmdAdd.on('close', function (code) {
-                    if (stdout != '') {
-                        console.log('[stdout] stdout "%s"', stdout);    
+                    if (stdout != '' && options.debug) {
+                        console.log('[stdout] "%s"', stdout);    
                     }
-                    if (stderr != '') {
-                        console.log('[stderr] stderr "%s"', stderr);    
+                    if (stderr != '' && options.debug) {
+                        console.log('[stderr] "%s"', stderr);    
                     }
                         
                     if (code !== 0) {
@@ -215,11 +217,11 @@ module.exports = function (options) {
                 });
 
                 cmdCommit.on('close', function (code) {
-                    if (stdout != '') {
-                        console.log('[stdout] stdout "%s"', stdout);    
+                    if (stdout != '' && options.debug) {
+                        console.log('[stdout] "%s"', stdout);    
                     }
-                    if (stderr != '') {
-                        console.log('[stderr] stderr "%s"', stderr);    
+                    if (stderr != '' && options.debug) {
+                        console.log('[stderr] "%s"', stderr);    
                     }
 
                     if (code !== 0) {
@@ -245,11 +247,11 @@ module.exports = function (options) {
                 });
 
                 cmdTag.on('close', function (code) {
-                    if (stdout != '') {
-                        console.log('[stdout] stdout "%s"', stdout);    
+                    if (stdout != '' && options.debug) {
+                        console.log('[stdout] "%s"', stdout);    
                     }
-                    if (stderr != '') {
-                        console.log('[stderr] stderr "%s"', stderr);    
+                    if (stderr != '' && options.debug) {
+                        console.log('[stderr] "%s"', stderr);    
                     }                
 
                     if (code !== 0) {
@@ -273,15 +275,15 @@ module.exports = function (options) {
                 });
                 
                 cmdPush.on('close', function(code) {
-                    if (stdout != '') {
+                    if (stdout != '' && options.debug) {
                         console.log('[stdout] "%s"', stdout);    
                     }
-                    if (stderr != '') {
+                    if (stderr != '' && options.debug) {
                         console.log('[stderr] "%s"', stderr);    
                     }
                     
                     if (code !== 0) {
-                        cb('git push exited with code ' + code);
+                        cb('git push exited with code ' + code + ' [stderr]: ' + stderr);
                     } else {
                         cb(null, version);
                     }
@@ -314,11 +316,11 @@ module.exports = function (options) {
                     });
 
                     cmdTag.on('close', function (code) {
-                        if (stdout != '') {
-                            console.log('[stdout] stdout "%s"', stdout);    
+                        if (stdout != '' && options.debug) {
+                            console.log('[stdout] "%s"', stdout);    
                         }
-                        if (stderr != '') {
-                            console.log('[stderr] stderr "%s"', stderr);    
+                        if (stderr != '' && options.debug) {
+                            console.log('[stderr] "%s"', stderr);    
                         }                    
                         if (code !== 0) {
                             cb('git tag exited with code ' + code);
@@ -374,11 +376,11 @@ module.exports = function (options) {
                     });
 
                     cmdAdd.on('close', function (code) {
-                        if (stdout != '') {
-                            console.log('[stdout] stdout "%s"', stdout);    
+                        if (stdout != '' && options.debug) {
+                            console.log('[stdout] "%s"', stdout);    
                         }
-                        if (stderr != '') {
-                            console.log('[stderr] stderr "%s"', stderr);    
+                        if (stderr != '' && options.debug) {
+                            console.log('[stderr] "%s"', stderr);    
                         }                    
                     
                         if (code !== 0) {
@@ -408,11 +410,11 @@ module.exports = function (options) {
                     });
 
                     cmdCommit.on('close', function (code) {
-                        if (stdout != '') {
-                            console.log('[stdout] stdout "%s"', stdout);    
+                        if (stdout != '' && options.debug) {
+                            console.log('[stdout] "%s"', stdout);    
                         }
-                        if (stderr != '') {
-                            console.log('[stderr] stderr "%s"', stderr);    
+                        if (stderr != '' && options.debug) {
+                            console.log('[stderr] "%s"', stderr);    
                         }                    
                     
                         if (code !== 0) {
@@ -442,11 +444,11 @@ module.exports = function (options) {
                     });
                     
                     cmdPush.on('close', function(code) {
-                        if (stdout != '') {
-                            console.log('[stdout] stdout "%s"', stdout);    
+                        if (stdout != '' && options.debug) {
+                            console.log('[stdout] "%s"', stdout);    
                         }
-                        if (stderr != '') {
-                            console.log('[stderr] stderr "%s"', stderr);    
+                        if (stderr != '' && options.debug) {
+                            console.log('[stderr] "%s"', stderr);    
                         }
                         
                         if (code !== 0) {
