@@ -308,6 +308,8 @@ module.exports = function (options) {
                             console.log('[END] stderr "%s"', stderr);    
                         }
                         
+                        console.log('[END] code "%s"', code);
+                        
                         if (code !== 0) {
                             cb('git push exited with code ' + code);
                         } else {
@@ -335,6 +337,8 @@ module.exports = function (options) {
                         if (stderr != '') {
                             console.log('[END] stderr "%s"', stderr);    
                         }
+                        
+                        console.log('[END] code "%s"', code);    
                         
                         if (code !== 0) {
                             cb('git push exited with code ' + code);
