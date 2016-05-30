@@ -191,7 +191,7 @@ module.exports = function (options) {
 
                 var stdout = '';
                 var stderr = '';
-                spawnLogs(stdout, stderr, cmdPush)
+                spawnLogs(stdout, stderr, cmdPush);
                 
                 cmdPush.on('close', function(code) {
                     if (stdout != '') {
