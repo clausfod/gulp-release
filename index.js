@@ -302,10 +302,10 @@ module.exports = function (options) {
                     
                     cmdTags.on('close', function(code) {
                         if (stdout != '') {
-                            console.log('[stdout] "%s"', stdout);    
+                            console.log('[stdout] stdout "%s"', stdout);    
                         }
                         if (stderr != '') {
-                            console.log('[stderr] "%s"', stderr);    
+                            console.log('[stderr] stderr "%s"', stderr);    
                         }
                     });
                                         
@@ -324,10 +324,10 @@ module.exports = function (options) {
                     
                     cmdPush.on('close', function(code) {
                         if (stdout != '') {
-                            console.log('[stdout] "%s"', stdout);    
+                            console.log('[stdout] stdout "%s"', stdout);    
                         }
                         if (stderr != '') {
-                            console.log('[stderr] "%s"', stderr);    
+                            console.log('[stderr] stderr "%s"', stderr);    
                         }
                         
                         if (code !== 0) {
