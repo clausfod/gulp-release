@@ -285,7 +285,36 @@ module.exports = function (options) {
             },
             function pushFiles(version, cb) {
                 var cmdPush;
+                var cmdTags;
                 if (options.bumpVersion) {
+                    
+                    cmdTags = spawn('git', ['tag']);
+                    
+                    var stdout = '';
+                    var stderr = '';
+                    
+                    cmdTags.stdout.on('data', function(buf) {
+                        stdout += buf;
+                    });
+                    cmdTags.stderr.on('data', function(buf) {
+                        stderr += buf;
+                    });
+                    
+                    cmdTags.on('close', function(code) {
+                        if (stdout != '') {
+                            console.log('[END] stdout "%s"', stdout);    
+                        }
+                        if (stderr != '') {
+                            console.log('[END] stderr "%s"', stderr);    
+                        }
+                        
+                        if (code !== 0) {
+                            cb('git push exited with code ' + code);
+                        } else {
+                            cb(null, version);
+                        }
+                    });
+                                        
                     cmdPush = spawn('git', ['push', '--tags', 'origin', 'master']);
                     gutil.log(gutil.colors.yellow('Pushing files to repository'));
 
@@ -293,18 +322,25 @@ module.exports = function (options) {
                     var stderr = '';
                     
                     cmdPush.stdout.on('data', function(buf) {
-                        console.log('[STR] stdout "%s"', String(buf));
                         stdout += buf;
                     });
                     cmdPush.stderr.on('data', function(buf) {
-                        console.log('[STR] stderr "%s"', String(buf));
                         stderr += buf;
                     });
                     
                     cmdPush.on('close', function(code) {
-                        console.log('[END] code', code);
-                        console.log('[END] stdout "%s"', stdout);
-                        console.log('[END] stderr "%s"', stderr);
+                        if (stdout != '') {
+                            console.log('[END] stdout "%s"', stdout);    
+                        }
+                        if (stderr != '') {
+                            console.log('[END] stderr "%s"', stderr);    
+                        }
+                        
+                        if (code !== 0) {
+                            cb('git push exited with code ' + code);
+                        } else {
+                            cb(null, version);
+                        }
                     });
                 } else {
                     cb(null, version);
