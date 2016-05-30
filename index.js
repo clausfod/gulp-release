@@ -290,25 +290,23 @@ module.exports = function (options) {
                     
                     cmdTags = spawn('git', ['tag']);
                     
-                    var stdout = '';
+                                        var stdout = '';
                     var stderr = '';
                     
-                    cmdTags.stdout.on('data', function(buf) {
+                    cmdPush.stdout.on('data', function(buf) {
                         stdout += buf;
                     });
-                    cmdTags.stderr.on('data', function(buf) {
+                    cmdPush.stderr.on('data', function(buf) {
                         stderr += buf;
                     });
                     
-                    cmdTags.on('close', function(code) {
+                    cmdPush.on('close', function(code) {
                         if (stdout != '') {
-                            console.log('[END] stdout "%s"', stdout);    
+                            console.log('[stdout] "%s"', stdout);    
                         }
                         if (stderr != '') {
-                            console.log('[END] stderr "%s"', stderr);    
+                            console.log('[stderr] "%s"', stderr);    
                         }
-                        
-                        console.log('[END] code "%s"', code);
                         
                         if (code !== 0) {
                             cb('git push exited with code ' + code);
@@ -332,13 +330,11 @@ module.exports = function (options) {
                     
                     cmdPush.on('close', function(code) {
                         if (stdout != '') {
-                            console.log('[END] stdout "%s"', stdout);    
+                            console.log('[stdout] "%s"', stdout);    
                         }
                         if (stderr != '') {
-                            console.log('[END] stderr "%s"', stderr);    
+                            console.log('[stderr] "%s"', stderr);    
                         }
-                        
-                        console.log('[END] code "%s"', code);    
                         
                         if (code !== 0) {
                             cb('git push exited with code ' + code);
