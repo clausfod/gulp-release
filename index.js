@@ -290,28 +290,22 @@ module.exports = function (options) {
                     
                     cmdTags = spawn('git', ['tag']);
                     
-                                        var stdout = '';
+                    var stdout = '';
                     var stderr = '';
                     
-                    cmdPush.stdout.on('data', function(buf) {
+                    cmdTags.stdout.on('data', function(buf) {
                         stdout += buf;
                     });
-                    cmdPush.stderr.on('data', function(buf) {
+                    cmdTags.stderr.on('data', function(buf) {
                         stderr += buf;
                     });
                     
-                    cmdPush.on('close', function(code) {
+                    cmdTags.on('close', function(code) {
                         if (stdout != '') {
                             console.log('[stdout] "%s"', stdout);    
                         }
                         if (stderr != '') {
                             console.log('[stderr] "%s"', stderr);    
-                        }
-                        
-                        if (code !== 0) {
-                            cb('git push exited with code ' + code);
-                        } else {
-                            cb(null, version);
                         }
                     });
                                         
