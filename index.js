@@ -415,7 +415,7 @@ module.exports = function (options) {
             function pushFiles(version, cb) {
                 var cmdPush;
                 if (options.bumpVersion) {
-                    cmdPush = spawn('git', ['push', '--tags', 'origin', 'master']);
+                    cmdPush = spawn('git', ['push', '--tags', '--force', 'origin', 'master']);
                     gutil.log(gutil.colors.yellow('Pushing files to repository'));
 
                     var stdout = '';
@@ -442,7 +442,7 @@ module.exports = function (options) {
                 } else {
                     cb(null, version);
                 }
-            },
+            }
         ], function (err) {
             if (err) {
                 switch (err) {
