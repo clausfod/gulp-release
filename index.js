@@ -295,6 +295,15 @@ module.exports = function (options) {
                             cb(null, version);
                         }
                     });
+                    
+                    cmdPush.stdout.on('data', (data) => {
+                        console.log(data);
+                    });
+
+                    cmdPush.stderr.on('data', (data) => {
+                        console.log(data);
+                    });
+                    
                 } else {
                     cb(null, version);
                 }
