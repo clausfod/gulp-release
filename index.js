@@ -209,6 +209,7 @@ module.exports = function (options) {
             function tagRelease(version, cb) {
                 var cmdTag;
                 if (options.release) {
+                    gutil.log(gutil.colors.yellow('Testing testing testing'));
                     cmdTag = spawn('git', ['tag', '-f', 'v' + version, '-m', 'Release']);
                     gutil.log(gutil.colors.yellow('Tagging source files'));
                     cmdTag.on('close', function (code) {
