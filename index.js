@@ -288,22 +288,24 @@ module.exports = function (options) {
                 if (options.bumpVersion) {
                     cmdPush = spawn('git', ['push', '--tags', 'origin', 'master']);
                     gutil.log(gutil.colors.yellow('Pushing files to repository'));
-                    cmdPush.on('close', function (code) {
-                        if (code !== 0) {
-                            cb('git push exited with code ' + code);
-                        } else {
-                            cb(null, version);
-                        }
-                    });
-                    
-                    cmdPush.stdout.on('data', (data) => {
-                        console.log(data);
-                    });
 
-                    cmdPush.stderr.on('data', (data) => {
-                        console.log(data);
+                    var stdout = '';
+                    var stderr = '';
+                    
+                    cmdPush.stdout.on('data', function(buf) {
+                        console.log('[STR] stdout "%s"', String(buf));
+                        stdout += buf;
+                    });
+                    cmdPush.stderr.on('data', function(buf) {
+                        console.log('[STR] stderr "%s"', String(buf));
+                        stderr += buf;
                     });
                     
+                    cmdPush.on('close', function(code) {
+                        console.log('[END] code', code);
+                        console.log('[END] stdout "%s"', stdout);
+                        console.log('[END] stderr "%s"', stderr);
+                    });
                 } else {
                     cb(null, version);
                 }
