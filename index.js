@@ -201,7 +201,7 @@ module.exports = function (options) {
             },
             function commitDistributionFiles(version, cb) {
                 var message = (options.release ? 'Release ' : 'Pre-release ') + version,
-                var cmdCommit = spawn('git', ['commit', '-m', message], { cwd: repoPath });
+                cmdCommit = spawn('git', ['commit', '-m', message], { cwd: repoPath });
                 gutil.log(gutil.colors.yellow('Committing files to distribution repository'));
                 
                 var stdout = '';
