@@ -65,7 +65,6 @@ module.exports = function (options) {
                     
                     gutil.log(gutil.colors.yellow('Fetching SHA hashes'));
 
-                    var stdout = '';
                     var stderr = '';
                     
                     cmdRevParse.stdout.on('data', function(data) {
@@ -88,10 +87,12 @@ module.exports = function (options) {
                 }
             },
             function cloneDistributionRepository(version, cb) {
-                var cmdClone = spawn('git', ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]);
+                //var cmdClone = spawn('git', ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]);
                 gutil.log(gutil.colors.yellow('Cloning distribution repository ' + options.repository));
                 
-                var stdout = '';
+                gitCmd("['clone', '-b', 'master', '--single-branch', options.repository, repoPath]", cb)
+                
+                /*var stdout = '';
                 var stderr = '';
                 
                 cmdClone.stdout.on('data', function(buf) {
@@ -111,7 +112,7 @@ module.exports = function (options) {
                     } else {
                         cb(null, version);
                     }
-                });
+                });*/
             },
             function removeExistingFiles(version, cb) {
                 var clean = function (folder) {
@@ -442,7 +443,28 @@ module.exports = function (options) {
                 } else {
                     cb(null, version);
                 }
-            }
+            },
+            function gitCmd(params, cb) {
+                var cmdGit, stdout = '', stderr = '';
+                cmdGit = spawn('git', params);
+                cmdGit.stdout.on('data', function (buf) {
+                     stdout += buf;
+                });
+                cmdGit.stderr.on('data', function (buf) {
+                    stderr += buf;
+                });
+                cmdGit.on('close', function (code) {
+                    if (stdout != '' && options.debug) {
+                        console.log('[stdout] "%s"', stdout);    
+                    }
+                    
+                    if (code !== 0) {
+                        cb('git push exited with code ' + code + ' [stderr]: ' + stderr);
+                    } else {
+                        cb(null, version);
+                    }                    
+                });
+             }          
         ], function (err) {
             if (err) {
                 switch (err) {
