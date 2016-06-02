@@ -40,7 +40,7 @@ module.exports = function (options) {
         });
         callback(null);
     },
-    function gitCmd(cb, params) {
+    function gitCmd(params, cb) {
         var cmdGit, stdout = '', stderr = '';
         console.log('1');
         console.log('value: ' + params);  
@@ -116,7 +116,7 @@ module.exports = function (options) {
                 //var cmdClone = spawn('git', ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]);
                 gutil.log(gutil.colors.yellow('Cloning distribution repository ' + options.repository));
                 var params = ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]; 
-                gitCmd(cd, params);
+                gitCmd(params, cb);
                 
                 /*var stdout = '';
                 var stderr = '';
