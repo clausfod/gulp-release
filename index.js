@@ -41,13 +41,13 @@ module.exports = function (options) {
         callback(null);
     }, function (callback) {
         async.waterfall([
-            function gitCmd(cb, params) {
+            function gitCmd(params1, cb) {
                 var cmdGit, stdout = '', stderr = '';
                 console.log('1');
-                console.log(params);  
+                console.log(params1);  
                 console.log('2');
                 console.log(cb);  
-                cmdGit = spawn('git', params);
+                cmdGit = spawn('git', params1);
                 console.log('3');
                 cmdGit.stdout.on('data', function (buf) {
                      stdout += buf;
@@ -116,8 +116,8 @@ module.exports = function (options) {
                 //var cmdClone = spawn('git', ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]);
                 gutil.log(gutil.colors.yellow('Cloning distribution repository ' + options.repository));
                 //var params = ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]; 
-                var params = 'test';
-                gitCmd(cb, 'test');
+                var params1 = 'test';
+                gitCmd('test', cb);
                 
                 /*var stdout = '';
                 var stderr = '';
