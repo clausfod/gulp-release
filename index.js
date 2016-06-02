@@ -43,7 +43,7 @@ module.exports = function (options) {
         async.waterfall([
             function gitCmd(params, cb) {
                 var cmdGit, stdout = '', stderr = '';
-                cmdGit = spawn('git', params);
+                cmdGit = spawn('git', [params]);
                 cmdGit.stdout.on('data', function (buf) {
                      stdout += buf;
                 });
@@ -111,7 +111,7 @@ module.exports = function (options) {
                 //var cmdClone = spawn('git', ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]);
                 gutil.log(gutil.colors.yellow('Cloning distribution repository ' + options.repository));
                 
-                gitCmd(['clone', '-b', 'master', '--single-branch', options.repository, repoPath], cb)
+                gitCmd('clone', '-b', 'master', '--single-branch', options.repository, repoPath, cb)
                 
                 /*var stdout = '';
                 var stderr = '';
