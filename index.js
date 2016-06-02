@@ -17,6 +17,7 @@ module.exports = function (options) {
     var self, files = [],
         repoPath = path.normalize(path.join(process.cwd(), 'deploy-' + Date.now() + '-' + (Math.floor(Math.random() * 1000))));
 
+    var params = {};
     options = assign({}, {
         debug: false,
         prefix: '',
@@ -41,7 +42,6 @@ module.exports = function (options) {
         callback(null);
     }, function (callback) {
         async.waterfall([
-            var params;
             function gitCmd(cb) {
                 var cmdGit, stdout = '', stderr = '';
                 console.log(params);  
