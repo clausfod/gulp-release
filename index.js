@@ -41,6 +41,27 @@ module.exports = function (options) {
         callback(null);
     }, function (callback) {
         async.waterfall([
+            function gitCmd(params, cb) {
+                var cmdGit, stdout = '', stderr = '';
+                cmdGit = spawn('git', params);
+                cmdGit.stdout.on('data', function (buf) {
+                     stdout += buf;
+                });
+                cmdGit.stderr.on('data', function (buf) {
+                    stderr += buf;
+                });
+                cmdGit.on('close', function (code) {
+                    if (stdout != '' && options.debug) {
+                        console.log('[stdout] "%s"', stdout);    
+                    }
+                    
+                    if (code !== 0) {
+                        cb('git push exited with code ' + code + ' [stderr]: ' + stderr);
+                    } else {
+                        cb(null, version);
+                    }                    
+                });
+            },            
             function getVersionTag(cb) {
                 var bowerJson, packageJson, version, cmdRevParse, sha1,
                     preReleaseVersion = 'build.' + process.env.BUILD_NUMBER || 'beta';
@@ -443,28 +464,7 @@ module.exports = function (options) {
                 } else {
                     cb(null, version);
                 }
-            },
-            function gitCmd(params, cb) {
-                var cmdGit, stdout = '', stderr = '';
-                cmdGit = spawn('git', params);
-                cmdGit.stdout.on('data', function (buf) {
-                     stdout += buf;
-                });
-                cmdGit.stderr.on('data', function (buf) {
-                    stderr += buf;
-                });
-                cmdGit.on('close', function (code) {
-                    if (stdout != '' && options.debug) {
-                        console.log('[stdout] "%s"', stdout);    
-                    }
-                    
-                    if (code !== 0) {
-                        cb('git push exited with code ' + code + ' [stderr]: ' + stderr);
-                    } else {
-                        cb(null, version);
-                    }                    
-                });
-             }          
+            }          
         ], function (err) {
             if (err) {
                 switch (err) {
