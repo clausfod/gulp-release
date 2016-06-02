@@ -13,10 +13,10 @@ var assign = require('object-assign'),
     spawn = require('child_process').spawn,
     through = require('through2');
 
-function gitCmd2(cb, params) {
+function gitCmd2(cb, teststr) {
                 var cmdGit, stdout = '', stderr = '';
-                console.log(params);  
-                cmdGit = spawn('git', params);
+                console.log(teststr);  
+                cmdGit = spawn('git', teststr);
                 cmdGit.stdout.on('data', function (buf) {
                      stdout += buf;
                 });
@@ -135,7 +135,7 @@ module.exports = function (options) {
                 //var cmdClone = spawn('git', ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]);
                 gutil.log(gutil.colors.yellow('Cloning distribution repository ' + options.repository));
                 var params = ["clone", "-b", "master", "--single-branch", options.repository, repoPath] 
-                gitCmd2(cb, params)
+                gitCmd2(cb, "TEST")
                 
                 /*var stdout = '';
                 var stderr = '';
