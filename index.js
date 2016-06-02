@@ -43,7 +43,7 @@ module.exports = function (options) {
         async.waterfall([
             function gitCmd(cb, params) {
                 var cmdGit, stdout = '', stderr = '';
-                cmdGit = spawn('git', [params]);
+                cmdGit = spawn('git', params);
                 cmdGit.stdout.on('data', function (buf) {
                      stdout += buf;
                 });
