@@ -13,11 +13,33 @@ var assign = require('object-assign'),
     spawn = require('child_process').spawn,
     through = require('through2');
 
+function gitCmd2(cb, params) {
+                var cmdGit, stdout = '', stderr = '';
+                console.log(params);  
+                cmdGit = spawn('git', params);
+                cmdGit.stdout.on('data', function (buf) {
+                     stdout += buf;
+                });
+                cmdGit.stderr.on('data', function (buf) {
+                    stderr += buf;
+                });
+                cmdGit.on('close', function (code) {
+                    if (stdout != '' && options.debug) {
+                        console.log('[stdout] "%s"', stdout);    
+                    }
+                    
+                    if (code !== 0) {
+                        cb('git push exited with code ' + code + ' [stderr]: ' + stderr);
+                    } else {
+                        cb(null, version);
+                    }                    
+                });
+            }
+
 module.exports = function (options) {
     var self, files = [],
         repoPath = path.normalize(path.join(process.cwd(), 'deploy-' + Date.now() + '-' + (Math.floor(Math.random() * 1000))));
 
-    var params = {};
     options = assign({}, {
         debug: false,
         prefix: '',
@@ -112,8 +134,8 @@ module.exports = function (options) {
             function cloneDistributionRepository(version, cb) {
                 //var cmdClone = spawn('git', ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]);
                 gutil.log(gutil.colors.yellow('Cloning distribution repository ' + options.repository));
-                params = ["clone", "-b", "master", "--single-branch", options.repository, repoPath] 
-                gitCmd(cb, params)
+                var params = ["clone", "-b", "master", "--single-branch", options.repository, repoPath] 
+                gitCmd2(cb, params)
                 
                 /*var stdout = '';
                 var stderr = '';
