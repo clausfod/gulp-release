@@ -139,7 +139,8 @@ module.exports = function (options) {
             function cloneDistributionRepository(version, cb) {
                 //var cmdClone = spawn('git', ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]);
                 gutil.log(gutil.colors.yellow('Cloning distribution repository ' + options.repository));
-                var params = ["clone", "-b", "master", "--single-branch", options.repository, repoPath]; 
+                //var params = ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]; 
+                var params = 'test';
                 gitCmd(cb, params);
                 
                 /*var stdout = '';
