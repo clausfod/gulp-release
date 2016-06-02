@@ -13,31 +13,6 @@ var assign = require('object-assign'),
     spawn = require('child_process').spawn,
     through = require('through2');
 
-function gitCmd2(cb, teststr) {
-                var cmdGit, stdout = '', stderr = '';
-                console.log("teststr1");  
-                console.log(teststr);  
-                console.log("teststr2");  
-                cmdGit = spawn('git', teststr);
-                cmdGit.stdout.on('data', function (buf) {
-                     stdout += buf;
-                });
-                cmdGit.stderr.on('data', function (buf) {
-                    stderr += buf;
-                });
-                cmdGit.on('close', function (code) {
-                    if (stdout != '' && options.debug) {
-                        console.log('[stdout] "%s"', stdout);    
-                    }
-                    
-                    if (code !== 0) {
-                        cb('git push exited with code ' + code + ' [stderr]: ' + stderr);
-                    } else {
-                        cb(null, version);
-                    }                    
-                });
-            }
-
 module.exports = function (options) {
     var self, files = [],
         repoPath = path.normalize(path.join(process.cwd(), 'deploy-' + Date.now() + '-' + (Math.floor(Math.random() * 1000))));
@@ -68,11 +43,12 @@ module.exports = function (options) {
         async.waterfall([
             function gitCmd(cb, params) {
                 var cmdGit, stdout = '', stderr = '';
-                console.log("hej1");  
+                console.log('1');
                 console.log(params);  
-                console.log("hej2");  
-                console.log(params);  
+                console.log('2');
+                console.log(cb);  
                 cmdGit = spawn('git', params);
+                console.log('3');
                 cmdGit.stdout.on('data', function (buf) {
                      stdout += buf;
                 });
@@ -141,7 +117,7 @@ module.exports = function (options) {
                 gutil.log(gutil.colors.yellow('Cloning distribution repository ' + options.repository));
                 //var params = ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]; 
                 var params = 'test';
-                gitCmd(cb, params);
+                gitCmd(cb, 'test');
                 
                 /*var stdout = '';
                 var stderr = '';
