@@ -15,7 +15,9 @@ var assign = require('object-assign'),
 
 function gitCmd2(cb, teststr) {
                 var cmdGit, stdout = '', stderr = '';
+                console.log("teststr1");  
                 console.log(teststr);  
+                console.log("teststr2");  
                 cmdGit = spawn('git', teststr);
                 cmdGit.stdout.on('data', function (buf) {
                      stdout += buf;
