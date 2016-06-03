@@ -28,13 +28,10 @@ module.exports = function (options) {
         options.bumpVersion = options.release;
     }
 
-    function gitCmd(params, cb) {
+    function gitCmd(params, version, cb) {
         var cmdGit, stdout = '', stderr = '';
-        console.log('1');
-        console.log('value: ' + params);  
-        console.log('2');
         cmdGit = spawn('git', params);
-        console.log('3');
+
         cmdGit.stdout.on('data', function (buf) {
                 stdout += buf;
         });
@@ -118,7 +115,7 @@ module.exports = function (options) {
                 //var cmdClone = spawn('git', ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]);
                 gutil.log(gutil.colors.yellow('Cloning distribution repository ' + options.repository));
                 var params = ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]; 
-                gitCmd(params, cb);
+                gitCmd(params, version, cb);
                 
                 /*var stdout = '';
                 var stderr = '';
