@@ -30,22 +30,29 @@ module.exports = function (options) {
 
     function gitCmd(cb, version, params, path) {
         var cmdGit, stdout = '', stderr = '';
+        if (options.debug) {
+            if (path == null) {
+                gutil.log(gutil.colors.yellow('Processing git command: git '  + params));
+            } else {
+                gutil.log(gutil.colors.yellow('Processing git command: git '  + params + ' ' + path));            
+            }            
+        }    
+        
         if (path == null) {
             cmdGit = spawn('git', params);    
         } else {
             cmdGit = spawn('git', params, path);
         }
         
-
         cmdGit.stdout.on('data', function (buf) {
-                stdout += buf;
+            stdout += buf;
         });
         cmdGit.stderr.on('data', function (buf) {
             stderr += buf;
         });
         cmdGit.on('close', function (code) {
             if (stdout != '' && options.debug) {
-                console.log('[stdout] "%s"', stdout);    
+                gutil.log(gutil.colors.yellow(stdout));
             }
             
             if (code !== 0) {
