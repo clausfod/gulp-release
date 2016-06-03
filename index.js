@@ -55,10 +55,6 @@ module.exports = function (options) {
             }                    
         });        
     }
-
-    function gitCmd(cb, version, params) {
-        gitCmd(cb, version, params, null)
-    }
     
     return through.obj(function (file, enc, callback) {
         var p = path.normalize(path.relative(file.cwd, file.path));
