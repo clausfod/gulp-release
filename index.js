@@ -28,18 +28,6 @@ module.exports = function (options) {
         options.bumpVersion = options.release;
     }
 
-    return through.obj(function (file, enc, callback) {
-        var p = path.normalize(path.relative(file.cwd, file.path));
-        self = this;
-        if (options.prefix.length > 0 && p.indexOf(options.prefix) === 0) {
-            p = p.substr(options.prefix.length + 1);
-        }
-        files.push({
-            source: file.path,
-            destination: path.join(repoPath, p)
-        });
-        callback(null);
-    },
     function gitCmd(params, cb) {
         var cmdGit, stdout = '', stderr = '';
         console.log('1');
@@ -64,7 +52,21 @@ module.exports = function (options) {
                 cb(null, version);
             }                    
         });
-    },          
+    }
+    
+    return through.obj(function (file, enc, callback) {
+        var p = path.normalize(path.relative(file.cwd, file.path));
+        self = this;
+        if (options.prefix.length > 0 && p.indexOf(options.prefix) === 0) {
+            p = p.substr(options.prefix.length + 1);
+        }
+        files.push({
+            source: file.path,
+            destination: path.join(repoPath, p)
+        });
+        callback(null);
+    },
+
     function (callback) {
         async.waterfall([
             function getVersionTag(cb) {
