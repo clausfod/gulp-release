@@ -31,11 +31,7 @@ module.exports = function (options) {
     function gitCmd(cb, version, params, path) {
         var cmdGit, stdout = '', stderr = '';
         if (options.debug) {
-            if (path == null) {
-                gutil.log(gutil.colors.yellow('Processing git command: git '  + params.join(' ')));
-            } else {
-                gutil.log(gutil.colors.yellow('Processing git command: git '  + params + ' ' + path));            
-            }            
+            gutil.log(gutil.colors.yellow('Processing git command: git '  + params.join(' ')));
         }    
         
         if (path == null) {
