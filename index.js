@@ -32,7 +32,7 @@ module.exports = function (options) {
         var cmdGit, stdout = '', stderr = '';
         if (options.debug) {
             if (path == null) {
-                gutil.log(gutil.colors.yellow('Processing git command: git '  + params));
+                gutil.log(gutil.colors.yellow('Processing git command: git '  + params.join(' ')));
             } else {
                 gutil.log(gutil.colors.yellow('Processing git command: git '  + params + ' ' + path));            
             }            
