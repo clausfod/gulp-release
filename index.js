@@ -28,9 +28,14 @@ module.exports = function (options) {
         options.bumpVersion = options.release;
     }
 
-    function gitCmd(params, version, cb) {
+    function gitCmd(params, path, version, cb) {
         var cmdGit, stdout = '', stderr = '';
-        cmdGit = spawn('git', params);
+        if (path == null) {
+            cmdGit = spawn('git', params);    
+        } else {
+            cmdGit = spawn('git', params, path);
+        }
+        
 
         cmdGit.stdout.on('data', function (buf) {
                 stdout += buf;
@@ -48,7 +53,11 @@ module.exports = function (options) {
             } else {
                 cb(null, version);
             }                    
-        });
+        });        
+    }
+
+    function gitCmd(params, version, cb) {
+        gitCmd(params, null, version, cb)
     }
     
     return through.obj(function (file, enc, callback) {
@@ -112,32 +121,10 @@ module.exports = function (options) {
                 }
             },
             function cloneDistributionRepository(version, cb) {
-                //var cmdClone = spawn('git', ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]);
                 gutil.log(gutil.colors.yellow('Cloning distribution repository ' + options.repository));
                 var params = ['clone', '-b', 'master', '--single-branch', options.repository, repoPath]; 
                 gitCmd(params, version, cb);
-                
-                /*var stdout = '';
-                var stderr = '';
-                
-                cmdClone.stdout.on('data', function(buf) {
-                    stdout += buf;
-                });
-                cmdClone.stderr.on('data', function(buf) {
-                    stderr += buf;
-                });
 
-                cmdClone.on('close', function (code) {
-                    if (stdout != '' && options.debug) {
-                        console.log('[stdout] "%s"', stdout);    
-                    }
-
-                    if (code !== 0) {
-                        cb('git clone exited with code ' + code + ' [stderr]: ' + stderr);
-                    } else {
-                        cb(null, version);
-                    }
-                });*/
             },
             function removeExistingFiles(version, cb) {
                 var clean = function (folder) {
@@ -204,109 +191,34 @@ module.exports = function (options) {
                 cb(null, version);
             },
             function addDistributionFiles(version, cb) {
-                var cmdAdd = spawn('git', ['add', '--all', '.'], { cwd: repoPath });
                 gutil.log(gutil.colors.yellow('Adding files to distribution repository'));
                 
-                var stdout = '';
-                var stderr = '';
-                
-                cmdAdd.stdout.on('data', function(buf) {
-                    stdout += buf;
-                });
-                cmdAdd.stderr.on('data', function(buf) {
-                    stderr += buf;
-                });
-
-                cmdAdd.on('close', function (code) {
-                    if (stdout != '' && options.debug) {
-                        console.log('[stdout] "%s"', stdout);    
-                    }
-                        
-                    if (code !== 0) {
-                        cb('git add exited with code ' + code + ' [stderr]: ' + stderr);
-                    } else {
-                        cb(null, version);
-                    }
-                });
+                var params = ['add', '--all', '.']; 
+                var path = { cwd: repoPath };
+                gitCmd(params, path, version, cb);
             },
             function commitDistributionFiles(version, cb) {
-                var message = (options.release ? 'Release ' : 'Pre-release ') + version,
-                cmdCommit = spawn('git', ['commit', '-m', message], { cwd: repoPath });
+                var message = (options.release ? 'Release ' : 'Pre-release ') + version
                 gutil.log(gutil.colors.yellow('Committing files to distribution repository'));
                 
-                var stdout = '';
-                var stderr = '';
-                
-                cmdCommit.stdout.on('data', function(buf) {
-                    stdout += buf;
-                });
-                cmdCommit.stderr.on('data', function(buf) {
-                    stderr += buf;
-                });
-
-                cmdCommit.on('close', function (code) {
-                    if (stdout != '' && options.debug) {
-                        console.log('[stdout] "%s"', stdout);    
-                    }
-
-                    if (code !== 0) {
-                        cb('git commit exited with code ' + code + ' [stderr]: ' + stderr);
-                    } else {
-                        cb(null, version);
-                    }
-                });
+                var params = ['commit', '-m', message]; 
+                var path = { cwd: repoPath };
+                gitCmd(params, path, version, cb);
             },
             function tagDistributionFiles(version, cb) {
-                var message = options.release ? 'Release' : 'Pre-release',
-                cmdTag = spawn('git', ['tag', '-f', 'v' + version, '-m', message], { cwd: repoPath });
+                var message = options.release ? 'Release' : 'Pre-release'
                 gutil.log(gutil.colors.yellow('Tagging files to distribution repository'));
                 
-                var stdout = '';
-                var stderr = '';
-                
-                cmdTag.stdout.on('data', function(buf) {
-                    stdout += buf;
-                });
-                cmdTag.stderr.on('data', function(buf) {
-                    stderr += buf;
-                });
-
-                cmdTag.on('close', function (code) {
-                    if (stdout != '' && options.debug) {
-                        console.log('[stdout] "%s"', stdout);    
-                    }
-
-                    if (code !== 0) {
-                        cb('git tag exited with code ' + code + ' [stderr]: ' + stderr);
-                    } else {
-                        cb(null, version);
-                    }
-                });
+                var params = ['tag', '-f', 'v' + version, '-m', message]; 
+                var path = { cwd: repoPath };
+                gitCmd(params, path, version, cb);
             },
             function pushDistributionFiles(version, cb) {
-                var cmdPush = spawn('git', ['push', '--tags', 'origin', 'master'], { cwd: repoPath });
                 gutil.log(gutil.colors.yellow('Pushing files to distribution repository'));
 
-                var stdout = '';
-                var stderr = '';
-                cmdPush.stdout.on('data', function(buf) {
-                    stdout += buf;
-                });
-                cmdPush.stderr.on('data', function(buf) {
-                    stderr += buf;
-                });
-                
-                cmdPush.on('close', function(code) {
-                    if (stdout != '' && options.debug) {
-                        console.log('[stdout] "%s"', stdout);    
-                    }
-                    
-                    if (code !== 0) {
-                        cb('git push exited with code ' + code + ' [stderr]: ' + stderr);
-                    } else {
-                        cb(null, version);
-                    }
-                });
+                var params = ['push', '--tags', 'origin', 'master']; 
+                var path = { cwd: repoPath };
+                gitCmd(params, path, version, cb);
             },
             function removeDistributionRepository(version, cb) {
                 gutil.log(gutil.colors.yellow('Removing local distribution repository clone'));
@@ -319,32 +231,11 @@ module.exports = function (options) {
                 });
             },
             function tagRelease(version, cb) {
-                var cmdTag;
                 if (options.release) {
-                    cmdTag = spawn('git', ['tag', '-f', 'v' + version, '-m', 'Release']);
                     gutil.log(gutil.colors.yellow('Tagging source files'));
                     
-                    var stdout = '';
-                    var stderr = '';
-                    
-                    cmdTag.stdout.on('data', function(buf) {
-                        stdout += buf;
-                    });
-                    cmdTag.stderr.on('data', function(buf) {
-                        stderr += buf;
-                    });
-
-                    cmdTag.on('close', function (code) {
-                        if (stdout != '' && options.debug) {
-                            console.log('[stdout] "%s"', stdout);    
-                        }
-
-                        if (code !== 0) {
-                            cb('git tag exited with code ' + code + ' [stderr]: ' + stderr);
-                        } else {
-                            cb(null, version);
-                        }
-                    });
+                    var params = ['tag', '-f', 'v' + version, '-m', 'Release']; 
+                    gitCmd(params, version, cb);
                 } else {
                     gutil.log(gutil.colors.yellow('Not tagging source files - not a release'));
                     cb(null, version);
@@ -380,29 +271,9 @@ module.exports = function (options) {
                     if (fs.existsSync('package.json')) {
                         versionFiles.push('package.json');
                     }
-                    cmdAdd = spawn('git', ['add'].concat(versionFiles));
 
-                    var stdout = '';
-                    var stderr = '';
-                    
-                    cmdAdd.stdout.on('data', function(buf) {
-                        stdout += buf;
-                    });
-                    cmdAdd.stderr.on('data', function(buf) {
-                        stderr += buf;
-                    });
-
-                    cmdAdd.on('close', function (code) {
-                        if (stdout != '' && options.debug) {
-                            console.log('[stdout] "%s"', stdout);    
-                        }
-                    
-                        if (code !== 0) {
-                            cb('git add exited with code ' + code + ' [stderr]: ' + stderr);
-                        } else {
-                            cb(null, version);
-                        }
-                    });
+                    var params = ['add'].concat(versionFiles); 
+                    gitCmd(params, version, cb);
                 } else {
                     cb(null, version);
                 }
@@ -411,29 +282,9 @@ module.exports = function (options) {
                 var cmdCommit;
                 if (options.bumpVersion) {
                     gutil.log(gutil.colors.yellow('Committing files to repository'));
-                    cmdCommit = spawn('git', ['commit', '-m', '[gulp] Bumping version']);
                     
-                    var stdout = '';
-                    var stderr = '';
-                    
-                    cmdCommit.stdout.on('data', function(buf) {
-                        stdout += buf;
-                    });
-                    cmdCommit.stderr.on('data', function(buf) {
-                        stderr += buf;
-                    });
-
-                    cmdCommit.on('close', function (code) {
-                        if (stdout != '' && options.debug) {
-                            console.log('[stdout] "%s"', stdout);    
-                        }
-                    
-                        if (code !== 0) {
-                            cb('git commit exited with code ' + code + ' [stderr]: ' + stderr);
-                        } else {
-                            cb(null, version);
-                        }
-                    });
+                    var params = ['commit', '-m', '[gulp] Bumping version']; 
+                    gitCmd(params, version, cb);
                 } else {
                     cb(null, version);
                 }
@@ -441,30 +292,10 @@ module.exports = function (options) {
             function pushFiles(version, cb) {
                 var cmdPush;
                 if (options.bumpVersion) {
-                    cmdPush = spawn('git', ['push', '--tags', '--force', 'origin', 'master']);
                     gutil.log(gutil.colors.yellow('Pushing files to repository'));
 
-                    var stdout = '';
-                    var stderr = '';
-                    
-                    cmdPush.stdout.on('data', function(buf) {
-                        stdout += buf;
-                    });
-                    cmdPush.stderr.on('data', function(buf) {
-                        stderr += buf;
-                    });
-                    
-                    cmdPush.on('close', function(code) {
-                        if (stdout != '' && options.debug) {
-                            console.log('[stdout] "%s"', stdout);    
-                        }
-                        
-                        if (code !== 0) {
-                            cb('git push exited with code ' + code + ' [stderr]: ' + stderr);
-                        } else {
-                            cb(null, version);
-                        }
-                    });
+                    var params = ['push', '--tags', '--force', 'origin', 'master']; 
+                    gitCmd(params, version, cb);
                 } else {
                     cb(null, version);
                 }
